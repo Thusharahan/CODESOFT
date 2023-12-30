@@ -1,0 +1,12 @@
+/* Add your custom styles here */
+
+/* Example: Adjusting the max-width of the uploaded image */
+#uploadedImage {
+    max-width: 300px;
+}
+
+#loadingSpinner {
+    display: none;
+    margin-top: 5px;
+    /* Adjust the margin as needed */
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Image Captioning</title>
+</head>
+<body class="container mt-5">
+    <div class="jumbotron text-center">
+        <h1 class="display-4">Image Caption Generator</h1>
+        <p class="lead">Upload an image to generate a caption</p>
+    </div>
+
+    <form action="/predict" method="post" enctype="multipart/form-data" class="mb-3">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="customFile" name="file" accept="image/*" required>
+            <label class="custom-file-label" for="customFile">Choose file</label>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2" id="predictBtn">Generate Caption</button>
+        <div class="spinner-border text-primary" role="status" id="loadingSpinner">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </form>
+
+    <div id="result" class="card text-center">
+        <div class="card-header">
+            Caption Result
+        </div>
+        <div class="card-body">
+            <img id="uploadedImage" class="img-thumbnail mb-3" alt="Uploaded Image">
+            <p class="card-text" id="captionText"></p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            // Show loading spinner
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            loadingSpinner.style.display = 'inline-block';
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
+
+            const data = await response.json();
+
+            const uploadedImage = document.getElementById('uploadedImage');
+            uploadedImage.src = URL.createObjectURL(formData.get('file'));
+
+            document.getElementById('captionText').innerText = `Caption: ${data.caption}`;
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
